@@ -13,7 +13,9 @@ An example of this process would be:
 4. The user estimates that they need 1 Gal of milk every X (days, weeks, months, etc.)
 5. This item is added to the cart at the frequency listed above.
 
-##Mockups 
+The output for this project will be a list of semantic list items and the actual, specific product. However, the 'big picture' idea is to be able to send off the specific product info in order to have orders fulfilled with the specific product even though all the user really wants is 'milk'.
+
+##Mockups:
 Hand drawn - see me for details.
 
 ##Technologies:

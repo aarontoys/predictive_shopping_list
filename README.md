@@ -1,4 +1,4 @@
-# Predictive Shopping Cart
+# Predictive Shopping List
 
 ##Overview:
 
@@ -16,7 +16,7 @@ An example of this process would be:
 ##Mockups 
 Hand drawn - see me for details.
 
-##Technologies
+##Technologies:
 HTML for pages
 CSS for styling - probably using Bootstrap and a Bootswatch theme.
 Javascript for logic and prediction

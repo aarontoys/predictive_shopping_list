@@ -1,0 +1,9 @@
+{
+  "firebase": "aarontoys-psl",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

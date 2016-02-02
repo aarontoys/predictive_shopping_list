@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Untitled</title>
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="src/css/main.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet" integrity="sha256-Ucf/ylcKTNevYP6l7VNUhGLDRZPQs1+LsbbxuzMxUJM= sha512-FW2XqnqMwERwg0LplG7D64h8zA1BsxvxrDseWpHLq8Dg8kOBmLs19XNa9oAajN/ToJRRklfDJ398sOU+7LcjZA==" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="page-header">
+          <h1>Example page header <small>Subtext for header</small></h1>
+        </div> <!-- page-header -->
+        <div class="row bottom-margin">
+          <div class="input-group bottom-margin">
+            <input id="upc" type="text" class="form-control" value="049000000443">
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-primary" id="getUPC" type="button">Go!</button>
+            </span>
+          </div> <!-- /input-group -->
+
+
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel title</h3>
+            </div> <!-- panel-heading -->
+            <div class="panel-body">
+              <div class="col-md-8">
+                <h4 id="prodTitle"></h4>
+                <p id="prodBrand"></p>
+                <img id="prodImg" src="">
+
+              </div> <!-- col-md-8-->
+
+              <div class="col-md-4">
+                <form id="newItem">
+                  <label>What do you call this?</label><br>
+                  <input name="semanticName" type="text" placeholder="Milk, Eggs, Bread, etc."><br>
+                  <label>I will need XXXX again in:</label><br>
+                  <input name="reorderFreqVal" type="number" placeholder="1, 2, 3 . . ."><br>
+                  <input type="radio" name="reorderFreqMag" value="1"> Day(s)<br>
+                  <input type="radio" name="reorderFreqMag" value="7"> Week(s)<br>
+                  <input type="radio" name="reorderFreqMag" value="30"> Month(s)<br>
+                  <input class="btn btn-primary" type="submit" value="Add to my list">
+              </div> <!--col-md-4-->
+            </div> <!-- panel-body -->
+          </div> <!-- panel -->
+        </div> <!--row-->
+
+        <div class="row">
+          <div class="col-md-4">
+            <p class="text-center"><strong>Current List</strong></p>
+            <p class="curList text-center"></p>
+            <table class="table table-striped table-bordered table-condensed">
+              <tr>
+                <th></th>
+                <th>Item Name</th> 
+                <th></th>
+              </tr>
+<!--               <tr>
+                <td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td>
+                <td class="col-2">Milk</td> 
+                <td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td>
+              </tr> -->
+            </table>
+          </div> <!-- col-md-4 -->
+          <div class="col-md-4">
+            <p class="text-center"><strong>Next List</strong></p>
+            <p class="nextList text-center"></p>
+            <table class="table table-striped table-bordered table-condensed">
+              <tr>
+                <th></th>
+                <th>Item Name</th> 
+                <th></th>
+              </tr>
+<!--               <tr>
+                <td class="col-1"><button type="button" class="btn btn-primary btn-xs"><-</td>
+                <td class="col-2">Milk</td> 
+                <td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td>
+              </tr> -->
+            </table>
+          </div> <!-- col-md-4 -->
+          <div class="col-md-4">
+            <p class="text-center"><strong>Following List</strong></p>
+            <p class="folList  text-center"></p>
+            <table class="table table-striped table-bordered table-condensed">
+              <tr>
+                <th></th>
+                <th>Item Name</th> 
+                <th></th>
+              </tr>
+<!--               <tr>
+                <td class="col-1"><button type="button" class="btn btn-primary btn-xs">-></td>
+                <td class="col-2">Milk</td> 
+                <td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td>
+              </tr> -->
+            </table>
+          <div> <!-- col-md-4 -->
+
+        </div> <!-- row -->
+      </div> <!--col-md-10 col-md-offset-1 -->
+    </div> <!-- row -->
+    
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    
+    <script type="text/javascript" src="src/js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "message": "ok",
+  "result": {
+    "count": 1,
+    "products": [
+      {
+        "categoryNamePath": "Grocery & Gourmet Food > Beverages > Soft Drinks",
+        "categoryId": 25136,
+        "mpid": "ccdca51826d571ae3ac7206e61c94a98",
+        "categoryName": "Soft Drinks",
+        "tags": [
+          "soda pop"
+        ],
+        "upcs": [
+          "00049000000443"
+        ],
+        "brandName": "Coca Cola",
+        "attributes": {
+          "weight": [
+            "20 oz",
+            "12 oz"
+          ],
+          "servings_per_container_": [
+            "2.500"
+          ],
+          "magnification": [
+            "2.920"
+          ],
+          "form_": [
+            "liquid"
+          ],
+          "serving_size_": [
+            "8.000"
+          ],
+          "containers_per_package_": [
+            "1.000"
+          ],
+          "flavor_": [
+            "cola,"
+          ]
+        },
+        "minSalePrice": 1.59,
+        "brandId": 906,
+        "categoryIdPath": "10171 > 16314 > 25136",
+        "mpns": [
+          "COKESC200024120"
+        ],
+        "countryCode": "US",
+        "currency": "USD",
+        "facetAttributes": {},
+        "title": "Coca-Cola Soda 20 oz",
+        "lastRecordedAt": 1453645933166,
+        "imageUrl": "http://scene7.targetimg1.com/is/image/Target/12953529?wid=480&hei=480",
+        "maxSalePrice": 60.16,
+        "offersCount": 4,
+        "storesCount": 4
+      }
+    ]
+  }
+}

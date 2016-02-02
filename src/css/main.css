@@ -1,0 +1,17 @@
+/* add custom styles */
+
+.bottom-margin {
+  margin-bottom: 20px;
+}
+
+.col-1 {
+  width: 10%
+}
+
+.col-3 {
+  width: 10%
+}
+
+img {
+  width: 220px;
+}

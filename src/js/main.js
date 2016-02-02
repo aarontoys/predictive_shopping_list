@@ -3,7 +3,7 @@
 $(document).on('ready', function() {
 
   $('.panel').hide();
-
+  
   // console.log('sanity check!');
   addDataFromLocalStorageToDome();
   $('#newItem').on('submit', function(event){
@@ -15,8 +15,9 @@ $(document).on('ready', function() {
     // console.log(semanticName);
     // console.log(reorderFreqVal);
     // console.log(reorderFreqMag);
-    console.log(reorderFreq);
-    var newSemItem = new SemanticItem(semanticName,reorderFreq);
+    // console.log(reorderFreq);
+  
+    newSemItem = new SemanticItem(semanticName,reorderFreq);
     itemList.push(newSemItem);
     console.log(itemList);
     $('.panel').slideUp('slow');
@@ -64,6 +65,7 @@ $("#getUPC").on('click', function getUPC () {
 
 //Logic
     var itemList =[];
+    var newSemItem ={};
 
 var daysBetweenShops = 3; /* will be asked of from user */
 var startDate = new Date(2016, 1, 1);
@@ -115,7 +117,7 @@ function chooseList (reorderFreq, name) {
       var test = getLocalStorage('curList');
       // test.push(newSemItem);
       console.log(test);
-        localStorage.setItem('curList', JSON.stringify(itemList));
+        localStorage.setItem('curList', JSON.stringify(test));
     $('.curList + table > tbody').append(newTableRow);
   }
   else if ((reorderDate >= nextListDate) && (reorderDate < followingListDate)){
@@ -131,28 +133,36 @@ function chooseList (reorderFreq, name) {
 }
 
 function getLocalStorage (listKey) {
+  debugger
   // var localStorageArr = [];
   var currentStateOfLocalStorage = [];  
   if(!JSON.parse(localStorage.getItem(listKey))){
-     return currentStateOfLocalStorage;   
+      console.log(newSemItem);
+      currentStateOfLocalStorage.push(newSemItem);
+      return currentStateOfLocalStorage;
+    
   } else {
       currentStateOfLocalStorage = JSON.parse(localStorage.getItem(listKey));
+      currentStateOfLocalStorage.push(newSemItem);
       return currentStateOfLocalStorage;
   }
 
   // console.log(currentStateOfLocalStorage);
-  // console.log(newSemItem);
+  console.log(currentStateOfLocalStorage);
   // currentStateOfLocalStorage.push(newSemItem);
   // console.log(currentStateOfLocalStorage);   
 }
 
 function addDataFromLocalStorageToDome () {
-  $('.curList + table > tbody').empty();
+  $('.curList tr:not(:first-child)').empty();
   // $('.nextList + table > tbody').empty();
   // $('.folList + table > tbody').empty();
+  if(!localStorage.getItem('curList')){
+    return;
+  }
   var allListItmes = JSON.parse(localStorage.getItem('curList'));
   allListItmes.forEach(function(obj){
-    $('.curList + table > tbody').append(newTableRow);  
+    $('.curList + table > tbody').append('<tr><td></td><td>'+obj.semanticName+'</td><td></td>');  
   });
 }
 

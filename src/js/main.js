@@ -5,21 +5,23 @@ $(document).on('ready', function() {
   $('.panel').hide();
   
   // console.log('sanity check!');
-  addDataFromLocalStorageToDome();
+  addDataFromLocalStorageToDom('curList');
+  addDataFromLocalStorageToDom('nextList');
+  addDataFromLocalStorageToDom('folList');
   $('#newItem').on('submit', function(event){
     event.preventDefault();
     semanticName = $('input[name="semanticName"]').val();
     reorderFreqVal = $('input[name="reorderFreqVal"]').val();
     reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
     reorderFreq = reorderFreqVal * reorderFreqMag;
-    // console.log(semanticName);
-    // console.log(reorderFreqVal);
-    // console.log(reorderFreqMag);
-    // console.log(reorderFreq);
+      // console.log(semanticName);
+      // console.log(reorderFreqVal);
+      // console.log(reorderFreqMag);
+      // console.log(reorderFreq);
   
     newSemItem = new SemanticItem(semanticName,reorderFreq);
-    itemList.push(newSemItem);
-    console.log(itemList);
+    // itemList.push(newSemItem);
+    // console.log(itemList);
     $('.panel').slideUp('slow');
 
     chooseList(reorderFreq, semanticName);
@@ -64,8 +66,8 @@ $("#getUPC").on('click', function getUPC () {
 });
 
 //Logic
-    var itemList =[];
-    var newSemItem ={};
+// var itemList =[];
+var newSemItem ={};
 
 var daysBetweenShops = 3; /* will be asked of from user */
 var startDate = new Date(2016, 1, 1);
@@ -79,9 +81,6 @@ $('.nextList').text(nextListDate.toDateString());
 $('.folList').text(followingListDate.toDateString());
 
 
-
-
-
 //Use this fnx with new Date(addDays) to get a new date object X days later)
 function addDays (dateObj, daysToAdd) {
   dateInMilli = dateObj.valueOf();
@@ -90,11 +89,11 @@ function addDays (dateObj, daysToAdd) {
 }
 
 
-// console.log(currentListDate);
-// console.log(nextListDate);
-// console.log(followingListDate);
+  // console.log(currentListDate);
+  // console.log(nextListDate);
+  // console.log(followingListDate);
 
-//create Semantic Item Constructor:
+  //create Semantic Item Constructor:
 
 function SemanticItem (semanticName, reorderFreq, upc) {
   this.semanticName = semanticName;
@@ -105,39 +104,41 @@ function SemanticItem (semanticName, reorderFreq, upc) {
 function chooseList (reorderFreq, name) {
   now = new Date();
   reorderDate = new Date(addDays(now, reorderFreq));
-  console.log('Reorder Date: ' + reorderDate);
-  var newTableRow = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td></tr>';
+  // console.log('Reorder Date: ' + reorderDate);
+  var newTableRow = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs"><-</td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td></tr>';
+  var newTableRowCurList = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td></tr>';
 
-  // console.log('Next List Date: ' + nextListDate);
-  // console.log('Following List Date: ' + followingListDate);
-
+    // console.log('Next List Date: ' + nextListDate);
+    // console.log('Following List Date: ' + followingListDate);
+  var localStorageData = [];
   //add a new condition later so if less than currListDate give optoin to create new list
   if (reorderDate < nextListDate){
     // console.log('reorder date is less than next List Date');
-      var test = getLocalStorage('curList');
+    localStorData = getLocalStorage('curList');
       // test.push(newSemItem);
-      console.log(test);
-        localStorage.setItem('curList', JSON.stringify(test));
-    $('.curList + table > tbody').append(newTableRow);
+      // console.log(test);
+    localStorage.setItem('curList', JSON.stringify(localStorData));
+    $('.curList + table > tbody').append(newTableRowCurList);
   }
   else if ((reorderDate >= nextListDate) && (reorderDate < followingListDate)){
+    localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
-            localStorage.setItem('nextList', JSON.stringify(itemList));
+    localStorage.setItem('nextList', JSON.stringify(localStorData));
     $('.nextList + table > tbody').append(newTableRow);
   }
   else {
             // console.log('reorder date is > following listDate');
-                localStorage.setItem('folList', JSON.stringify(itemList));
+    localStorData = getLocalStorage('nextList');
+    localStorage.setItem('folList', JSON.stringify(localStorData));
     $('.folList + table > tbody').append(newTableRow);
   }
 }
 
 function getLocalStorage (listKey) {
-  debugger
   // var localStorageArr = [];
   var currentStateOfLocalStorage = [];  
   if(!JSON.parse(localStorage.getItem(listKey))){
-      console.log(newSemItem);
+      // console.log(newSemItem);
       currentStateOfLocalStorage.push(newSemItem);
       return currentStateOfLocalStorage;
     
@@ -153,16 +154,22 @@ function getLocalStorage (listKey) {
   // console.log(currentStateOfLocalStorage);   
 }
 
-function addDataFromLocalStorageToDome () {
-  $('.curList tr:not(:first-child)').empty();
-  // $('.nextList + table > tbody').empty();
-  // $('.folList + table > tbody').empty();
-  if(!localStorage.getItem('curList')){
+function addDataFromLocalStorageToDom (list) {
+  $('.'+list+' tr:not(:first-child)').empty();
+  if(!localStorage.getItem(list)){
     return;
   }
-  var allListItmes = JSON.parse(localStorage.getItem('curList'));
-  allListItmes.forEach(function(obj){
-    $('.curList + table > tbody').append('<tr><td></td><td>'+obj.semanticName+'</td><td></td>');  
-  });
+  var allListItmes = JSON.parse(localStorage.getItem(list));
+  if(list === 'curList'){
+    allListItmes.forEach(function(obj){
+      $('.'+list+'+ table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+obj.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td></tr>');  
+    });
+  }
+  else {
+    allListItmes.forEach(function(obj){
+      $('.'+list+'+ table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs"><-</td><td class="col-2">'+obj.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td></tr>');  
+    });
+  }
 }
+
 

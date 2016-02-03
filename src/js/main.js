@@ -18,15 +18,33 @@ $(document).on('ready', function() {
       // console.log(reorderFreqVal);
       // console.log(reorderFreqMag);
       // console.log(reorderFreq);
-    debugger
+   
     newSemItem = new SemanticItem(semanticName,reorderFreq);
     // itemList.push(newSemItem);
     // console.log(itemList);
-    $('.panel').slideUp('slow');
+    // $('.panel').slideUp('slow');
 
     chooseList(reorderFreq, semanticName);
 
   });
+
+  $('.curList + table').on('click', '.btn-success', function(event){
+    event.preventDefault();
+    console.log($(this));
+    $(this).parent().parent().remove();
+    var removeFromLocalStorage = getLocalStorage('curList');
+    var domEl = $(this).closest('td').next('td').text();
+    // console.log(domEl);
+    var filteredArr = removeFromLocalStorage.filter(function(el){
+      // console.log(el.semanticName);
+      // console.log(domEl);
+      // console.log(el.semanticName == domEl);
+      return el.semanticName !== domEl;
+    });
+    console.log(filteredArr);
+    localStorage.setItem('curList', JSON.stringify(filteredArr));
+    });
+
 });
 
 var url ='';
@@ -66,19 +84,19 @@ $("#getUPC").on('click', function getUPC () {
 });
 
 //Logic
-// var itemList =[];
-var newSemItem ={};
+  // var itemList =[];
+  var newSemItem ={};
 
-var daysBetweenShops = 3; /* will be asked of from user */
-var startDate = new Date(2016, 1, 1);
-var firstShop = 3; /* will be asked of from user */
-var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
-var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
-var followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
+  var daysBetweenShops = 3; /* will be asked of from user */
+  var startDate = new Date(2016, 1, 1);
+  var firstShop = 3; /* will be asked of from user */
+  var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
+  var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
+  var followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
 
-$('.curList').text(currentListDate.toDateString());
-$('.nextList').text(nextListDate.toDateString());
-$('.folList').text(followingListDate.toDateString());
+  $('.curList').text(currentListDate.toDateString());
+  $('.nextList').text(nextListDate.toDateString());
+  $('.folList').text(followingListDate.toDateString());
 
 
 //Use this fnx with new Date(addDays) to get a new date object X days later)
@@ -172,4 +190,7 @@ function addDataFromLocalStorageToDom (list) {
   }
 }
 
-
+// function removeRow(str) {
+//   console.log(localStorageArr);
+//   // return !localStorageArr.semanticName;
+// }

@@ -35,6 +35,7 @@ $(document).on('ready', function() {
     var removeFromLocalStorage = getLocalStorage('curList');
     var domEl = $(this).closest('td').next('td').text();
     // console.log(domEl);
+    console.log(removeFromLocalStorage);
     var filteredArr = removeFromLocalStorage.filter(function(el){
       // console.log(el.semanticName);
       // console.log(domEl);
@@ -135,18 +136,21 @@ function chooseList (reorderFreq, name) {
     localStorData = getLocalStorage('curList');
       // test.push(newSemItem);
       // console.log(test);
+    localStorData.push(newSemItem);
     localStorage.setItem('curList', JSON.stringify(localStorData));
     $('.curList + table > tbody').append(newTableRowCurList);
   }
   else if ((reorderDate >= nextListDate) && (reorderDate < followingListDate)){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
+    localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
     $('.nextList + table > tbody').append(newTableRow);
   }
   else {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
+    localStorData.push(newSemItem);
     localStorage.setItem('folList', JSON.stringify(localStorData));
     $('.folList + table > tbody').append(newTableRow);
   }
@@ -157,12 +161,12 @@ function getLocalStorage (listKey) {
   var currentStateOfLocalStorage = [];  
   if(!JSON.parse(localStorage.getItem(listKey))){
       // console.log(newSemItem);
-      currentStateOfLocalStorage.push(newSemItem);
+      // currentStateOfLocalStorage.push(newSemItem);
       return currentStateOfLocalStorage;
     
   } else {
       currentStateOfLocalStorage = JSON.parse(localStorage.getItem(listKey));
-      currentStateOfLocalStorage.push(newSemItem);
+      // currentStateOfLocalStorage.push(newSemItem);
       return currentStateOfLocalStorage;
   }
 

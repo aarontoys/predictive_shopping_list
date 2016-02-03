@@ -18,7 +18,7 @@ $(document).on('ready', function() {
       // console.log(reorderFreqVal);
       // console.log(reorderFreqMag);
       // console.log(reorderFreq);
-  
+    debugger
     newSemItem = new SemanticItem(semanticName,reorderFreq);
     // itemList.push(newSemItem);
     // console.log(itemList);
@@ -128,7 +128,7 @@ function chooseList (reorderFreq, name) {
   }
   else {
             // console.log('reorder date is > following listDate');
-    localStorData = getLocalStorage('nextList');
+    localStorData = getLocalStorage('folList');
     localStorage.setItem('folList', JSON.stringify(localStorData));
     $('.folList + table > tbody').append(newTableRow);
   }
@@ -149,7 +149,7 @@ function getLocalStorage (listKey) {
   }
 
   // console.log(currentStateOfLocalStorage);
-  console.log(currentStateOfLocalStorage);
+  // console.log(currentStateOfLocalStorage);
   // currentStateOfLocalStorage.push(newSemItem);
   // console.log(currentStateOfLocalStorage);   
 }

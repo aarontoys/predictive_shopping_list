@@ -19,7 +19,7 @@ $(document).on('ready', function() {
     var reorderFreq = reorderFreqVal * reorderFreqMag;   
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
 
-    // $('.panel').slideUp('slow');
+    $('.panel').slideUp('slow');
     chooseList(reorderFreq, semanticName, newSemItem);
   });
 

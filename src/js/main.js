@@ -12,7 +12,7 @@ $(document).on('ready', function() {
   $('#newItem').on('submit', function(event){
     event.preventDefault();
     // createNewSemItem();
-    debugger
+    // debugger
     var semanticName = $('input[name="semanticName"]').val();
     var reorderFreqVal = $('input[name="reorderFreqVal"]').val();
     var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
@@ -20,12 +20,13 @@ $(document).on('ready', function() {
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
 
     // $('.panel').slideUp('slow');
-    chooseList(reorderFreq, semanticName);
+    chooseList(reorderFreq, semanticName, newSemItem);
   });
 
   $('table').on('click', '.btn-success', function(event){
     event.preventDefault();
     classIs = hasClass($(this));
+    // debugger
     removeFromList($(this), classIs);
     });
 
@@ -33,7 +34,12 @@ $(document).on('ready', function() {
     event.preventDefault();
     // debugger
     moveRight($(this));
+  });
 
+  $('table').on('click', '.move-left', function(event){
+    event.preventDefault();
+    // debugger
+    moveLeft($(this));
   });
 
 });
@@ -110,7 +116,7 @@ function SemanticItem (semanticName, reorderFreq, upc) {
   this.upc = upc || 049000000443;
 }
 
-function chooseList (reorderFreq, name) {
+function chooseList (reorderFreq, name, newSemItem) {
   var now = new Date();
   reorderDate = new Date(addDays(now, reorderFreq));
   // console.log('Reorder Date: ' + reorderDate);
@@ -194,9 +200,9 @@ function removeFromList (el, list, direction) {
   
     // console.log($(el).parent().parent());
   var domEl;
-  if(direction === 'left'){
-    domEl = $(el).closest('td').next('td').text();
-  } else {domEl = $(el).closest('td').prev('td').text();}
+  if(direction === 'right'){
+    domEl = $(el).closest('td').prev('td').text();
+  } else {domEl = $(el).closest('td').next('td').text();}
 
     $(el).parent().parent().remove();
     var removeFromLocalStorage = getLocalStorage(list);
@@ -259,15 +265,47 @@ function moveRight (el) {
     tableIndex = $('table').index(curEl);
     classIs = hasClass(el);
     addToList(tableIndex, el, direction);
-    removeFromList(el, classIs);
+    removeFromList(el, classIs, direction);
 }
 
 function addToList (tableIndex, el, direction) {
   // direction should equal right or left
   var localStorData = [];
   var objToMove = {};
-
-  if(tableIndex === 0){
+  if(direction === 'right'){
+    if(tableIndex === 0){
+      localStorData = getLocalStorage('nextList');
+        // test.push(newSemItem);
+        // console.log(test);
+        // console.log(classIs);
+      objToMove =   moveToList($(el),classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('nextList', JSON.stringify(localStorData));
+      $('.nextList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+    }
+    else if(tableIndex === 1) {
+      localStorData = getLocalStorage('folList');
+        // test.push(newSemItem);
+        // console.log(test);
+        // console.log(classIs);
+      objToMove =   moveToList($(el),classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('folList', JSON.stringify(localStorData));
+      $('.folList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+    }
+  }
+  else {
+    if(tableIndex === 1) {
+        localStorData = getLocalStorage('curList');
+      // test.push(newSemItem);
+      // console.log(test);
+      // console.log(classIs);
+    objToMove =   moveToList($(el),classIs, direction);
+    localStorData.push(objToMove);
+    localStorage.setItem('curList', JSON.stringify(localStorData));
+    $('.curList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+  }
+    else if(tableIndex === 2) {
     localStorData = getLocalStorage('nextList');
       // test.push(newSemItem);
       // console.log(test);
@@ -276,16 +314,16 @@ function addToList (tableIndex, el, direction) {
     localStorData.push(objToMove);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
     $('.nextList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+    }
   }
-  else if(tableIndex === 1) {
-    localStorData = getLocalStorage('folList');
-      // test.push(newSemItem);
-      // console.log(test);
-      // console.log(classIs);
-    objToMove =   moveToList($(el),classIs, direction);
-    localStorData.push(objToMove);
-    localStorage.setItem('folList', JSON.stringify(localStorData));
-    $('.folList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
-  }
-
 }
+
+
+  function moveLeft (el) {
+    var direction = 'left';
+    var curEl = $(el).parent().parent().parent().parent();
+    var tableIndex = $('table').index(curEl);
+    classIs = hasClass(el);
+    addToList(tableIndex, el, direction);
+    removeFromList(el, classIs, direction);
+  }

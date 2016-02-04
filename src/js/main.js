@@ -18,8 +18,13 @@ $(document).on('ready', function() {
     var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
     var reorderFreq = reorderFreqVal * reorderFreqMag;   
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
+    $('input[name="semanticName"]').val('');
+    $('input[name="reorderFreqVal"]').val('');
+    $('input[name="reorderFreqMag"]').attr('checked',false);
 
     $('.panel').slideUp('slow');
+    $('#upc').val('');
+
     chooseList(reorderFreq, semanticName, newSemItem);
   });
 
@@ -66,7 +71,7 @@ $("#getUPC").on('click', function getUPC () {
     };
 
  $.ajax(setting).done(function(data){
-    debugger
+    // debugger
     $('.panel').slideDown();
     console.log(data);
 

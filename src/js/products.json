@@ -106,6 +106,30 @@
         "maxSalePrice": 131.99,
         "offersCount": 148,
         "storesCount": 5
+      },
+        {
+        "categoryNamePath": "Grocery & Gourmet Food > Snack Foods > Chips & Crisps",
+        "categoryId": 19843,
+        "mpid": "2d26e4b798ac78f224878200a6d2b9f1",
+        "categoryName": "Chips & Crisps",
+        "upcs": [
+          "708163981159"
+        ],
+        "brandName": "Boulder Canyon",
+        "minSalePrice": 63.5,
+        "brandId": 36447,
+        "categoryIdPath": "10171 > 16119 > 19843",
+        "mpns": [
+          "1864942-B55"
+        ],
+        "countryCode": "US",
+        "currency": "USD",
+        "title": "Boulder Canyon Potato Chips - Jalapeno Cheddar Case Pack 55 - 1864942",
+        "lastRecordedAt": 1443618591406,
+        "imageUrl": "http://c.shld.net/rpx/i/s/pi/mp/10139695/prod_12035208719?src=http%3A%2F%2Fimages.doba.com%2Fproducts%2F1529%2Fimages_m103_image2_f40_4366404_8400.jpg&d=ba992bbb8e44eec7f506f4f5e72e3678858352eb&hei=245&wid=245&op_sharpen=1&qlt=85",
+        "maxSalePrice": 88.54,
+        "offersCount": 2,
+        "storesCount": 2
       }
     ]
   }

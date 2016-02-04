@@ -5,7 +5,10 @@ $(document).on('ready', function() {
   $('.panel').hide();
   
   // console.log('sanity check!');
-  // debugger    
+  debugger 
+  seedLocalStorage('curList');
+  seedLocalStorage('nextList');
+  seedLocalStorage('folList');   
   addDataFromLocalStorageToDom('curList');
   addDataFromLocalStorageToDom('nextList');
   addDataFromLocalStorageToDom('folList');
@@ -356,3 +359,23 @@ function addToList (tableIndex, el, direction) {
     addToList(tableIndex, el, direction);
     removeFromList(el, classIs, direction);
   }
+
+  function seedLocalStorage(list) {
+  var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
+  var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
+  var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+
+    if(!JSON.parse(localStorage.getItem(list))){
+    // console.log(JSON.parse(localStorage.getItem('items')));
+    
+    if (list === 'curList'){
+      localStorage.setItem(list, JSON.stringify(data1));
+    }
+    else if (list === 'nextList'){
+      localStorage.setItem(list, JSON.stringify(data2));
+    }
+    else {
+      localStorage.setItem(list, JSON.stringify(data3));
+    }
+  }
+}

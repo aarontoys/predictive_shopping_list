@@ -12,7 +12,7 @@
           "soda pop"
         ],
         "upcs": [
-          "00049000000443"
+          "049000024685"
         ],
         "brandName": "Coca Cola",
         "attributes": {
@@ -54,6 +54,58 @@
         "maxSalePrice": 60.16,
         "offersCount": 4,
         "storesCount": 4
+      },
+      {
+        "categoryNamePath": "Home & Kitchen > Household Supplies > Household Cleaning > Cloths & Wipes",
+        "categoryId": 25204,
+        "mpid": "262205961f2faca21638a6635bfd5df0",
+        "categoryName": "Cloths & Wipes",
+        "upcs": [
+          "044600016283"
+        ],
+        "brandName": "Clorox",
+        "minSalePrice": 5.79,
+        "brandId": 7120,
+        "categoryIdPath": "10164 > 17121 > 17566 > 25204",
+        "mpns": [
+          "null"
+        ],
+        "countryCode": "US",
+        "currency": "USD",
+        "title": "Clorox Disinfecting WipesÂ 75 Each",
+        "lastRecordedAt": 1453949686119,
+        "imageUrl": "http://pics1.ds-static.com/prodimg/412376/300.jpg",
+        "maxSalePrice": 22.98,
+        "offersCount": 8,
+        "storesCount": 4
+      },
+      {
+        "categoryNamePath": "Home & Kitchen > Household Supplies > Paper & Plastic > Facial Tissues",
+        "categoryId": 23551,
+        "mpid": "65804ffbae1cd1cf96fe94c21554f77d",
+        "categoryName": "Facial Tissues",
+        "upcs": [
+          "036000216066"
+        ],
+        "brandName": "Kimberly Clark",
+        "minSalePrice": 0.01,
+        "brandId": 7670,
+        "categoryIdPath": "10164 > 17121 > 20086 > 23551",
+        "mpns": [
+          "Cat1234",
+          "1",
+          "Kimberly Clark 21606CT",
+          "KCC21606BX",
+          "21606"
+        ],
+        "countryCode": "US",
+        "currency": "USD",
+        "title": "TISSUE,FACIAL125SHTS,2PLY",
+        "lastRecordedAt": 1454315013955,
+        "imageUrl": "http://ecx.images-amazon.com/images/I/21IZYcXW8QL.jpg",
+        "maxSalePrice": 131.99,
+        "offersCount": 148,
+        "storesCount": 5
       }
     ]
   }

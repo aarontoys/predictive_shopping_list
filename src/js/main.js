@@ -18,8 +18,13 @@ $(document).on('ready', function() {
     var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
     var reorderFreq = reorderFreqVal * reorderFreqMag;   
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
+    $('input[name="semanticName"]').val('');
+    $('input[name="reorderFreqVal"]').val('');
+    $('input[name="reorderFreqMag"]').attr('checked',false);
 
     $('.panel').slideUp('slow');
+    $('#upc').val('');
+
     chooseList(reorderFreq, semanticName, newSemItem);
   });
 
@@ -47,7 +52,8 @@ $(document).on('ready', function() {
 var url ='';
 
 $("#getUPC").on('click', function getUPC () {
-  var upc = $('#upc').val();
+  // debugger
+  
   // url = 'https://api.indix.com/v2/catalogStandard/products?countryCode=US&upc='+upc+'&app_id=74a3097f&app_key=75f09b2953555d90fe34b5d3eba7a1fe';
   url = 'src/js/products.json';
   // console.log(upc);
@@ -65,18 +71,41 @@ $("#getUPC").on('click', function getUPC () {
     };
 
  $.ajax(setting).done(function(data){
+    // debugger
     $('.panel').slideDown();
-    var brandName = data.result.products[0].brandName;
-    var title = data.result.products[0].title;
-    var imgURL = data.result.products[0].imageUrl;
-    var upc = data.result.products[0].upcs;
+    console.log(data);
 
+    //shouldn't need this in acutal API since it would return 1 product. Might have to account later for several variations of products, i.e. multiple results, being returned
+    // debugger
+    // var prodArr = data.result.products;
+    // console.log(prodArr);
+    var upc = $('#upc').val();
+    var filteredProduct = data.result.products.filter(function(elem){
+      return elem.upcs[0] === upc;
+    });
+
+    console.log(filteredProduct);
+    var brandName = filteredProduct[0].brandName;
+    var title = filteredProduct[0].title;
+    var imgURL = filteredProduct[0].imageUrl;
+    // var upc = filteredProduct.upcs;
     // console.log(imgURL);
 
     $('#prodTitle').text(title);
     $('#prodBrand').text("Brand: " + brandName);
     $('#prodImg').attr("src",imgURL);
+
   });
+
+    // console.log('Ajax Result: '+ajaxResult);
+    // console.log('Ajax brandName: ' + ajaxResult.brandName);
+
+     // console.log(filteredProduct);
+    // var brandName = data.result.products[0].brandName;
+    // var title = data.result.products[0].title;
+    // var imgURL = data.result.products[0].imageUrl;
+    // var upc = data.result.products[0].upcs[0];
+
 
 });
 

@@ -5,7 +5,7 @@ $(document).on('ready', function() {
   $('.panel').hide();
   
   // console.log('sanity check!');
-  debugger 
+  // debugger 
   seedLocalStorage('curList');
   seedLocalStorage('nextList');
   seedLocalStorage('folList');   

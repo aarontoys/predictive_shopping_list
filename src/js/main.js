@@ -123,7 +123,7 @@ $("#getUPC").on('click', function getUPC () {
   // var newSemItem ={};
 
   var daysBetweenShops = 3; /* will be asked of from user */
-  var startDate = new Date(2016, 1, 1);
+  var startDate = new Date(2016, 1, 5);
   var firstShop = 3; /* will be asked of from user */
   var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
   var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
@@ -158,8 +158,8 @@ function chooseList (reorderFreq, name, newSemItem) {
   var now = new Date();
   reorderDate = new Date(addDays(now, reorderFreq));
   // console.log('Reorder Date: ' + reorderDate);
-  var newTableRow = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
-  var newTableRowCurList = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+  // var newTableRow = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+  // var newTableRowCurList = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
 
     // console.log('Next List Date: ' + nextListDate);
     // console.log('Following List Date: ' + followingListDate);
@@ -172,21 +172,21 @@ function chooseList (reorderFreq, name, newSemItem) {
       // console.log(test);
     localStorData.push(newSemItem);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(newTableRowCurList);
+    $('.curList + table > tbody').append(trOk+name+trClose);
   }
   else if ((reorderDate >= nextListDate) && (reorderDate < followingListDate)){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(newTableRow);
+    $('.nextList + table > tbody').append(trStd+name+trClose);
   }
   else {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
     localStorage.setItem('folList', JSON.stringify(localStorData));
-    $('.folList + table > tbody').append(newTableRow);
+    $('.folList + table > tbody').append(trStd+name+trClose);
   }
 }
 
@@ -219,12 +219,12 @@ function addDataFromLocalStorageToDom (list) {
   // console.log(allListItmes);
   if(list === 'curList'){
     allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+obj.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');  
+      $('.'+list+'+ table > tbody').append(trOk+obj.semanticName+trClose);  
     });
   }
   else {
     allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+obj.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');  
+      $('.'+list+'+ table > tbody').append(trStd+obj.semanticName+trClose);  
     });
   }
 }
@@ -319,7 +319,7 @@ function addToList (tableIndex, el, direction) {
       objToMove =   moveToList($(el),classIs, direction);
       localStorData.push(objToMove);
       localStorage.setItem('nextList', JSON.stringify(localStorData));
-      $('.nextList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+      $('.nextList + table > tbody').append(trStd+objToMove.semanticName+trClose);
     }
     else if(tableIndex === 1) {
       localStorData = getLocalStorage('folList');
@@ -329,7 +329,7 @@ function addToList (tableIndex, el, direction) {
       objToMove =   moveToList($(el),classIs, direction);
       localStorData.push(objToMove);
       localStorage.setItem('folList', JSON.stringify(localStorData));
-      $('.folList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+      $('.folList + table > tbody').append(trStd+objToMove.semanticName+trClose);
     }
   }
   else {
@@ -341,7 +341,7 @@ function addToList (tableIndex, el, direction) {
     objToMove =   moveToList($(el),classIs, direction);
     localStorData.push(objToMove);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+    $('.curList + table > tbody').append(trOk+objToMove.semanticName+trClose);
   }
     else if(tableIndex === 2) {
     localStorData = getLocalStorage('nextList');
@@ -351,7 +351,7 @@ function addToList (tableIndex, el, direction) {
     objToMove =   moveToList($(el),classIs, direction);
     localStorData.push(objToMove);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append('<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+objToMove.semanticName+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>');
+    $('.nextList + table > tbody').append(trStd+objToMove.semanticName+trClose);
     }
   }
 }

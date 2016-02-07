@@ -52,6 +52,12 @@ $(document).on('ready', function() {
 
 });
 
+var trOk = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">';
+
+var trStd = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">';
+
+var trClose = '</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+
 var url ='';
 
 $("#getUPC").on('click', function getUPC () {

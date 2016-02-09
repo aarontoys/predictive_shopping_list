@@ -20,7 +20,7 @@ $(document).on('ready', function() {
     // debugger
     var semanticName = $('input[name="semanticName"]').val();
     var reorderFreqVal = $('input[name="reorderFreqVal"]').val();
-    var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
+    var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val() || 1;
     var reorderFreq = reorderFreqVal * reorderFreqMag;   
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
     var listDate = new Date($('input[name="listDate"]:checked').val());
@@ -55,11 +55,11 @@ $(document).on('ready', function() {
 
 });
 
-var trOk = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">';
+var trCheck = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">';
 
-var trStd = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">';
+var trRight = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">';
 
-var trClose = '</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+var trLeft = '</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
 
 var url ='';
 
@@ -178,21 +178,21 @@ function chooseList (listDate, name, newSemItem) {
       // console.log(test);
     localStorData.push(newSemItem);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(trOk+name+trClose);
+    $('.curList + table > tbody').append(trCheck+name+trLeft);
   }
   else if (listDate.getTime() === nextListDate.getTime()){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(trStd+name+trClose);
+    $('.nextList + table > tbody').append(trRight+name+trLeft);
   }
   else if (listDate.getTime() === followingListDate.getTime()) {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
     localStorage.setItem('folList', JSON.stringify(localStorData));
-    $('.folList + table > tbody').append(trStd+name+trClose);
+    $('.folList + table > tbody').append(trRight+name+trLeft);
   }
 }
 
@@ -225,12 +225,12 @@ function addDataFromLocalStorageToDom (list) {
   // console.log(allListItmes);
   if(list === 'curList'){
     allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append(trOk+obj.semanticName+trClose);  
+      $('.'+list+'+ table > tbody').append(trCheck+obj.semanticName+trLeft);  
     });
   }
   else {
     allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append(trStd+obj.semanticName+trClose);  
+      $('.'+list+'+ table > tbody').append(trRight+obj.semanticName+trLeft);  
     });
   }
 }
@@ -325,7 +325,7 @@ function addToList (tableIndex, el, direction) {
       objToMove =   moveToList($(el),classIs, direction);
       localStorData.push(objToMove);
       localStorage.setItem('nextList', JSON.stringify(localStorData));
-      $('.nextList + table > tbody').append(trStd+objToMove.semanticName+trClose);
+      $('.nextList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
     }
     else if(tableIndex === 1) {
       localStorData = getLocalStorage('folList');
@@ -335,7 +335,7 @@ function addToList (tableIndex, el, direction) {
       objToMove =   moveToList($(el),classIs, direction);
       localStorData.push(objToMove);
       localStorage.setItem('folList', JSON.stringify(localStorData));
-      $('.folList + table > tbody').append(trStd+objToMove.semanticName+trClose);
+      $('.folList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
     }
   }
   else {
@@ -347,7 +347,7 @@ function addToList (tableIndex, el, direction) {
     objToMove =   moveToList($(el),classIs, direction);
     localStorData.push(objToMove);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(trOk+objToMove.semanticName+trClose);
+    $('.curList + table > tbody').append(trCheck+objToMove.semanticName+trLeft);
   }
     else if(tableIndex === 2) {
     localStorData = getLocalStorage('nextList');
@@ -357,7 +357,7 @@ function addToList (tableIndex, el, direction) {
     objToMove =   moveToList($(el),classIs, direction);
     localStorData.push(objToMove);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(trStd+objToMove.semanticName+trClose);
+    $('.nextList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
     }
   }
 }

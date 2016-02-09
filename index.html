@@ -101,12 +101,13 @@
               <div class="col-md-4">
                 <form id="newItem">
                   <label>What do you call this?</label><br>
-                  <input name="semanticName" type="text" placeholder="Milk, Eggs, Bread, etc."><br>
-                  <label>I will need XXXX again in:</label><br>
-                  <input name="reorderFreqVal" type="number" placeholder="1, 2, 3 . . ."><br>
+                  <input name="semanticName" type="text" placeholder="Milk, Eggs, Bread, etc."><br><br>
+                  <label>To which list would you like to add this?</label><br><br>
                   <input type="radio" name="listDate" value=""><label></label><br>
                   <input type="radio" name="listDate" value=""><label></label><br>
-                  <input type="radio" name="listDate" value=""><label></label><br>
+                  <input type="radio" name="listDate" value=""><label></label><br><br>
+                  <label>On average, I need this</label><br>
+                  every <input name="reorderFreqVal" type="number" placeholder="1, 2, 3 . . ."> days.<br><br> 
                   <input class="btn btn-primary" type="submit" value="Add to my list">
               </div> <!--col-md-4-->
             </div> <!-- panel-body -->
@@ -124,7 +125,7 @@
                   <th class="text-center">Item Name</th> 
                   <th></th>
                 </tr>
-  <!--               <tr>
+                <!--               <tr>
                   <td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td>
                   <td class="col-2">Milk</td> 
                   <td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td>
@@ -143,7 +144,7 @@
                   <th class="text-center">Item Name</th> 
                   <th></th>
                 </tr>
-  <!--               <tr>
+                <!--               <tr>
                   <td class="col-1"><button type="button" class="btn btn-primary btn-xs"><-</td>
                   <td class="col-2">Milk</td> 
                   <td class="col-3"><button type="button" class="btn btn-primary btn-xs">-></td>
@@ -169,11 +170,16 @@
                 </tr> -->
               </tbody>
             </table>
-          <div> <!-- col-md-4 -->
+          </div> <!-- col-md-4 -->
 
         </div> <!-- row -->
+        <div class="row">
+          <p>Some Text</p>
+        </div>
       </div> <!--col-md-10 col-md-offset-1 -->
     </div> <!-- row -->
+
+
     
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     

@@ -15,3 +15,8 @@
 img {
   width: 220px;
 }
+
+li {
+  display: inline-block;
+  width: 150px;
+}

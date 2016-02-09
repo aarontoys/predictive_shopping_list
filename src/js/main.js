@@ -12,6 +12,8 @@ $(document).on('ready', function() {
   addDataFromLocalStorageToDom('curList');
   addDataFromLocalStorageToDom('nextList');
   addDataFromLocalStorageToDom('folList');
+
+
   $('#newItem').on('submit', function(event){
     event.preventDefault();
     // createNewSemItem();
@@ -21,6 +23,7 @@ $(document).on('ready', function() {
     var reorderFreqMag = $('input[name="reorderFreqMag"]:checked').val();
     var reorderFreq = reorderFreqVal * reorderFreqMag;   
     var newSemItem = new SemanticItem(semanticName,reorderFreq);
+    var listDate = new Date($('input[name="listDate"]:checked').val());
     $('input[name="semanticName"]').val('');
     $('input[name="reorderFreqVal"]').val('');
     $('input[name="reorderFreqMag"]').attr('checked',false);
@@ -28,7 +31,7 @@ $(document).on('ready', function() {
     $('.panel').slideUp('slow');
     $('#upc').val('');
 
-    chooseList(reorderFreq, semanticName, newSemItem);
+    chooseList(listDate, semanticName, newSemItem);
   });
 
   $('table').on('click', '.btn-success', function(event){
@@ -133,6 +136,14 @@ $("#getUPC").on('click', function getUPC () {
   $('.nextList').text(nextListDate.toDateString());
   $('.folList').text(followingListDate.toDateString());
 
+  $('input[type="radio"]').eq(0).next().html('&nbsp Current List: '+ currentListDate.toDateString());
+  $('input[type="radio"]').eq(1).next().html('&nbsp Next List: '+ nextListDate.toDateString());
+  $('input[type="radio"]').eq(2).next().html('&nbsp Following List: '+ followingListDate.toDateString());
+
+  $('input[type="radio"]').eq(0).attr('value', currentListDate);
+  $('input[type="radio"]').eq(1).attr('value', nextListDate);
+  $('input[type="radio"]').eq(2).attr('value', followingListDate);
+
 
 //Use this fnx with new Date(addDays) to get a new date object X days later)
 function addDays (dateObj, daysToAdd) {
@@ -154,18 +165,13 @@ function SemanticItem (semanticName, reorderFreq, upc) {
   this.upc = upc || 049000000443;
 }
 
-function chooseList (reorderFreq, name, newSemItem) {
+function chooseList (listDate, name, newSemItem) {
   var now = new Date();
-  reorderDate = new Date(addDays(now, reorderFreq));
-  // console.log('Reorder Date: ' + reorderDate);
-  // var newTableRow = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
-  // var newTableRowCurList = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">'+name+'</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+  // reorderDate = new Date(addDays(now, reorderFreq));
 
-    // console.log('Next List Date: ' + nextListDate);
-    // console.log('Following List Date: ' + followingListDate);
   var localStorageData = [];
   //add a new condition later so if less than currListDate give optoin to create new list
-  if (reorderDate < nextListDate){
+  if (listDate.getTime() === currentListDate.getTime()){
     // console.log('reorder date is less than next List Date');
     localStorData = getLocalStorage('curList');
       // test.push(newSemItem);
@@ -174,14 +180,14 @@ function chooseList (reorderFreq, name, newSemItem) {
     localStorage.setItem('curList', JSON.stringify(localStorData));
     $('.curList + table > tbody').append(trOk+name+trClose);
   }
-  else if ((reorderDate >= nextListDate) && (reorderDate < followingListDate)){
+  else if (listDate.getTime() === nextListDate.getTime()){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
     $('.nextList + table > tbody').append(trStd+name+trClose);
   }
-  else {
+  else if (listDate.getTime() === followingListDate.getTime()) {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
@@ -367,21 +373,21 @@ function addToList (tableIndex, el, direction) {
   }
 
   function seedLocalStorage(list) {
-  var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
-  var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
-  var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+    var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
+    var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
+    var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
 
     if(!JSON.parse(localStorage.getItem(list))){
     // console.log(JSON.parse(localStorage.getItem('items')));
     
-    if (list === 'curList'){
-      localStorage.setItem(list, JSON.stringify(data1));
-    }
-    else if (list === 'nextList'){
-      localStorage.setItem(list, JSON.stringify(data2));
-    }
-    else {
-      localStorage.setItem(list, JSON.stringify(data3));
-    }
+      if (list === 'curList'){
+        localStorage.setItem(list, JSON.stringify(data1));
+      }
+      else if (list === 'nextList'){
+        localStorage.setItem(list, JSON.stringify(data2));
+      }
+      else {
+        localStorage.setItem(list, JSON.stringify(data3));
+      }
   }
 }

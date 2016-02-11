@@ -31,7 +31,7 @@ $(document).on('ready', function() {
     $('.panel').slideUp('slow');
     $('#upc').val('');
 
-    chooseList(listDate, semanticName, newSemItem);
+    chooseList(listDate, newSemItem);
   });
 
   $('table').on('click', '.btn-success', function(event){
@@ -85,7 +85,7 @@ $("#getUPC").on('click', function getUPC () {
  $.ajax(setting).done(function(data){
     // debugger
     $('.panel').slideDown();
-    console.log(data);
+    // console.log(data);
 
     //shouldn't need this in acutal API since it would return 1 product. Might have to account later for several variations of products, i.e. multiple results, being returned
     // debugger
@@ -96,7 +96,7 @@ $("#getUPC").on('click', function getUPC () {
       return elem.upcs[0] === upc;
     });
 
-    console.log(filteredProduct);
+    // console.log(filteredProduct);
     var brandName = filteredProduct[0].brandName;
     var title = filteredProduct[0].title;
     var imgURL = filteredProduct[0].imageUrl;
@@ -131,10 +131,12 @@ $("#getUPC").on('click', function getUPC () {
   var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
   var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
   var followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
+  var holdingListDate = new Date(addDays(followingListDate,daysBetweenShops));
 
   $('.curList').text(currentListDate.toDateString());
   $('.nextList').text(nextListDate.toDateString());
   $('.folList').text(followingListDate.toDateString());
+  $('.holdList').text(holdingListDate.toDateString());
 
   $('input[type="radio"]').eq(0).next().html('&nbsp Current List: '+ currentListDate.toDateString());
   $('input[type="radio"]').eq(1).next().html('&nbsp Next List: '+ nextListDate.toDateString());
@@ -165,12 +167,15 @@ function SemanticItem (semanticName, reorderFreq, upc) {
   this.upc = upc || 049000000443;
 }
 
-function chooseList (listDate, name, newSemItem) {
+function chooseList (listDate, newSemItem) {
   var now = new Date();
   // reorderDate = new Date(addDays(now, reorderFreq));
 
   var localStorageData = [];
   //add a new condition later so if less than currListDate give optoin to create new list
+  console.log(listDate);
+  console.log(currentListDate);
+  console.log(listDate === currentListDate);
   if (listDate.getTime() === currentListDate.getTime()){
     // console.log('reorder date is less than next List Date');
     localStorData = getLocalStorage('curList');
@@ -178,22 +183,39 @@ function chooseList (listDate, name, newSemItem) {
       // console.log(test);
     localStorData.push(newSemItem);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(trCheck+name+trLeft);
+    $('.curList + table > tbody').append(trCheck+newSemItem.semanticName+trLeft);
+    addToMultipleLists(listDate, newSemItem);
   }
   else if (listDate.getTime() === nextListDate.getTime()){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(trRight+name+trLeft);
+    $('.nextList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+    addToMultipleLists(listDate, newSemItem);
   }
   else if (listDate.getTime() === followingListDate.getTime()) {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
     localStorage.setItem('folList', JSON.stringify(localStorData));
-    $('.folList + table > tbody').append(trRight+name+trLeft);
+    $('.folList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+    addToMultipleLists(listDate, newSemItem);
   }
+  else if(listDate.getTime() === holdingListDate.getTime()) {
+    localStorData = getLocalStorage('holdList');
+    localStorData.push(newSemItem);
+    localStorage.setItem('holdList', JSON.stringify(localStorData));
+    $('.holdList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+  }
+}
+
+function addToMultipleLists (listDate, newSemItem) {
+  // console.log(listDate);
+  // console.log(newSemItem.reorderFreq);
+  tempDate = new Date(addDays(listDate,newSemItem.reorderFreq));
+  // console.log(tempDate);
+  chooseList(tempDate, newSemItem);
 }
 
 function getLocalStorage (listKey) {

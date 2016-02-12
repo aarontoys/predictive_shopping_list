@@ -12,6 +12,7 @@ $(document).on('ready', function() {
   addDataFromLocalStorageToDom('curList');
   addDataFromLocalStorageToDom('nextList');
   addDataFromLocalStorageToDom('folList');
+  addDataFromLocalStorageToDom('holdList');
 
 
   $('#newItem').on('submit', function(event){
@@ -128,7 +129,7 @@ $("#getUPC").on('click', function getUPC () {
   var daysBetweenShops = 3; /* will be asked of from user */
   var startDate = new Date(2016, 1, 5);
   var firstShop = 3; /* will be asked of from user */
-  var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
+  var currentListDate = new Date(addDays(startDate, firstShop + 1)-1000); /*Add to DOM */
   var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
   var followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
   var holdingListDate = new Date(addDays(followingListDate,daysBetweenShops));
@@ -173,10 +174,10 @@ function chooseList (listDate, newSemItem) {
 
   var localStorageData = [];
   //add a new condition later so if less than currListDate give optoin to create new list
-  console.log(listDate);
-  console.log(currentListDate);
+  console.log(listDate.getTime());
+  console.log(currentListDate.getTime());
   console.log(listDate === currentListDate);
-  if (listDate.getTime() === currentListDate.getTime()){
+  if (listDate.getTime() === currentListDate.getTime() || listDate.getTime() < nextListDate.getTime()){
     // console.log('reorder date is less than next List Date');
     localStorData = getLocalStorage('curList');
       // test.push(newSemItem);
@@ -186,7 +187,7 @@ function chooseList (listDate, newSemItem) {
     $('.curList + table > tbody').append(trCheck+newSemItem.semanticName+trLeft);
     addToMultipleLists(listDate, newSemItem);
   }
-  else if (listDate.getTime() === nextListDate.getTime()){
+  else if (listDate.getTime() === nextListDate.getTime() || listDate.getTime() < followingListDate.getTime()){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
@@ -194,7 +195,7 @@ function chooseList (listDate, newSemItem) {
     $('.nextList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
     addToMultipleLists(listDate, newSemItem);
   }
-  else if (listDate.getTime() === followingListDate.getTime()) {
+  else if (listDate.getTime() === followingListDate.getTime() || listDate.getTime() < holdingListDate.getTime()) {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
@@ -202,7 +203,7 @@ function chooseList (listDate, newSemItem) {
     $('.folList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
     addToMultipleLists(listDate, newSemItem);
   }
-  else if(listDate.getTime() === holdingListDate.getTime()) {
+  else if(listDate.getTime() >= holdingListDate.getTime()) {
     localStorData = getLocalStorage('holdList');
     localStorData.push(newSemItem);
     localStorage.setItem('holdList', JSON.stringify(localStorData));

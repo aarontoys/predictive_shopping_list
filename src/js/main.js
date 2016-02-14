@@ -14,6 +14,8 @@ $(document).on('ready', function() {
   addDataFromLocalStorageToDom('folList');
   addDataFromLocalStorageToDom('holdList');
 
+  changeListDates('curList');
+
 
   $('#newItem').on('submit', function(event){
     event.preventDefault();
@@ -166,6 +168,8 @@ function SemanticItem (semanticName, reorderFreq, upc) {
   this.semanticName = semanticName;
   this.reorderFreq = reorderFreq;
   this.upc = upc || 049000000443;
+  this.holdDate = new Date();
+  this.qty = 1;
 }
 
 function chooseList (listDate, newSemItem) {
@@ -386,31 +390,70 @@ function addToList (tableIndex, el, direction) {
 }
 
 
-  function moveLeft (el) {
-    var direction = 'left';
-    var curEl = $(el).parent().parent().parent().parent();
-    var tableIndex = $('table').index(curEl);
-    classIs = hasClass(el);
-    addToList(tableIndex, el, direction);
-    removeFromList(el, classIs, direction);
+function moveLeft (el) {
+  var direction = 'left';
+  var curEl = $(el).parent().parent().parent().parent();
+  var tableIndex = $('table').index(curEl);
+  classIs = hasClass(el);
+  addToList(tableIndex, el, direction);
+  removeFromList(el, classIs, direction);
+}
+
+function seedLocalStorage(list) {
+  var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
+  var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
+  var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+
+  if(!JSON.parse(localStorage.getItem(list))){
+  // console.log(JSON.parse(localStorage.getItem('items')));
+  
+    if (list === 'curList'){
+      localStorage.setItem(list, JSON.stringify(data1));
+    }
+    else if (list === 'nextList'){
+      localStorage.setItem(list, JSON.stringify(data2));
+    }
+    else {
+      localStorage.setItem(list, JSON.stringify(data3));
+    }
+  }
+}
+
+function changeListDates (list) {
+  debugger
+  var now = new Date();
+  // now = new Date(addDays(now,daysBetweenShops));
+  var listDate = new Date($('.'+list).text());
+  listDate = new Date(addDays(listDate,1)-1000);
+
+  for (var iDate = listDate; iDate < now ; iDate.setDate(iDate.getDate() + daysBetweenShops)) {
+    currentListDate = new Date(currentListDate.setDate(currentListDate.getDate() + daysBetweenShops));
+  
   }
 
-  function seedLocalStorage(list) {
-    var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
-    var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
-    var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+  $('.curList').text(currentListDate.toDateString());
 
-    if(!JSON.parse(localStorage.getItem(list))){
-    // console.log(JSON.parse(localStorage.getItem('items')));
-    
-      if (list === 'curList'){
-        localStorage.setItem(list, JSON.stringify(data1));
-      }
-      else if (list === 'nextList'){
-        localStorage.setItem(list, JSON.stringify(data2));
-      }
-      else {
-        localStorage.setItem(list, JSON.stringify(data3));
-      }
+  if(listDate < now){
+
+
+    // if (list === 'curList'){
+    //   $('.'+list+' + table').find('tr:not(:first-child())').remove();
+    // }
+
+    // $('.'+list+' + table').find('tr:not(:first-child())').remove();
+    // localStorData = getLocalStorage(list);
+  
+    // if (list === 'curList'){
+
+      
+    // }
+    // else if (list === 'nextList'){
+    //   localStorage.setItem(list, JSON.stringify(data2));
+    // }
+    // else {
+    //   localStorage.setItem(list, JSON.stringify(data3));
+    // }
   }
+
+
 }

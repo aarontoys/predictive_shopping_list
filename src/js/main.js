@@ -426,12 +426,27 @@ function changeListDates (list) {
   var listDate = new Date($('.'+list).text());
   listDate = new Date(addDays(listDate,1)-1000);
 
-  for (var iDate = listDate; iDate < now ; iDate.setDate(iDate.getDate() + daysBetweenShops)) {
+  for (var iDate = listDate, j=1; iDate < now ; iDate.setDate(iDate.getDate() + daysBetweenShops), j++) {
+    // if(j===1){
+      
+      $('.curList + table > tbody').append($('.nextList + table').find('tr:not(:first-child())'));
+      $('.nextList + table > tbody').append($('.folList + table').find('tr:not(:first-child())'));
+    // }
+    // else if(j===2){
+
+    // }
     currentListDate = new Date(currentListDate.setDate(currentListDate.getDate() + daysBetweenShops));
   
   }
 
+  nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
+  followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
+  holdingListDate = new Date(addDays(followingListDate,daysBetweenShops));
+
   $('.curList').text(currentListDate.toDateString());
+  $('.nextList').text(nextListDate.toDateString());
+  $('.folList').text(followingListDate.toDateString());
+  $('.holdList').text(holdingListDate.toDateString());
 
   if(listDate < now){
 

@@ -12,6 +12,9 @@ $(document).on('ready', function() {
   addDataFromLocalStorageToDom('curList');
   addDataFromLocalStorageToDom('nextList');
   addDataFromLocalStorageToDom('folList');
+  addDataFromLocalStorageToDom('holdList');
+
+  changeListDates('curList');
 
 
   $('#newItem').on('submit', function(event){
@@ -31,7 +34,7 @@ $(document).on('ready', function() {
     $('.panel').slideUp('slow');
     $('#upc').val('');
 
-    chooseList(listDate, semanticName, newSemItem);
+    chooseList(listDate, newSemItem);
   });
 
   $('table').on('click', '.btn-success', function(event){
@@ -55,11 +58,11 @@ $(document).on('ready', function() {
 
 });
 
-var trCheck = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span></td><td class="col-2">';
+var trCheck = '<tr><td class="col-1"><button type="button" class="btn btn-success btn-xs glyphicon glyphicon-ok"></td><td class="col-2">';
 
-var trRight = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left"><-</td><td class="col-2">';
+var trRight = '<tr><td class="col-1"><button type="button" class="btn btn-primary btn-xs move-left glyphicon glyphicon-arrow-left"></td><td class="col-2">';
 
-var trLeft = '</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right">-></td></tr>';
+var trLeft = '</td><td class="col-3"><button type="button" class="btn btn-primary btn-xs move-right glyphicon glyphicon-arrow-right"></td></tr>';
 
 var url ='';
 
@@ -85,7 +88,7 @@ $("#getUPC").on('click', function getUPC () {
  $.ajax(setting).done(function(data){
     // debugger
     $('.panel').slideDown();
-    console.log(data);
+    // console.log(data);
 
     //shouldn't need this in acutal API since it would return 1 product. Might have to account later for several variations of products, i.e. multiple results, being returned
     // debugger
@@ -96,7 +99,7 @@ $("#getUPC").on('click', function getUPC () {
       return elem.upcs[0] === upc;
     });
 
-    console.log(filteredProduct);
+    // console.log(filteredProduct);
     var brandName = filteredProduct[0].brandName;
     var title = filteredProduct[0].title;
     var imgURL = filteredProduct[0].imageUrl;
@@ -124,17 +127,19 @@ $("#getUPC").on('click', function getUPC () {
 //Logic
   // var itemList =[];
   // var newSemItem ={};
-
+  // debugger
   var daysBetweenShops = 3; /* will be asked of from user */
   var startDate = new Date(2016, 1, 5);
   var firstShop = 3; /* will be asked of from user */
-  var currentListDate = new Date(addDays(startDate, firstShop)); /*Add to DOM */
+  var currentListDate = new Date(addDays(startDate, firstShop + 1)-1000); /*Add to DOM */
   var nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
   var followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
+  var holdingListDate = new Date(addDays(followingListDate,daysBetweenShops));
 
   $('.curList').text(currentListDate.toDateString());
   $('.nextList').text(nextListDate.toDateString());
   $('.folList').text(followingListDate.toDateString());
+  $('.holdList').text(holdingListDate.toDateString());
 
   $('input[type="radio"]').eq(0).next().html('&nbsp Current List: '+ currentListDate.toDateString());
   $('input[type="radio"]').eq(1).next().html('&nbsp Next List: '+ nextListDate.toDateString());
@@ -163,37 +168,66 @@ function SemanticItem (semanticName, reorderFreq, upc) {
   this.semanticName = semanticName;
   this.reorderFreq = reorderFreq;
   this.upc = upc || 049000000443;
+  this.holdDate = new Date();
+  this.qty = 1;
+  this.uID = Math.floor(Math.random()*10000);
 }
 
-function chooseList (listDate, name, newSemItem) {
+function chooseList (listDate, newSemItem) {
   var now = new Date();
   // reorderDate = new Date(addDays(now, reorderFreq));
 
   var localStorageData = [];
   //add a new condition later so if less than currListDate give optoin to create new list
-  if (listDate.getTime() === currentListDate.getTime()){
+  console.log(listDate.getTime());
+  console.log(currentListDate.getTime());
+  console.log(listDate === currentListDate);
+  if (listDate.getTime() === currentListDate.getTime() || listDate.getTime() < nextListDate.getTime()){
     // console.log('reorder date is less than next List Date');
+
     localStorData = getLocalStorage('curList');
       // test.push(newSemItem);
       // console.log(test);
     localStorData.push(newSemItem);
     localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(trCheck+name+trLeft);
+    $('.curList + table > tbody').append(trCheck+newSemItem.semanticName+trLeft);
+    $('.curList + table tr:last td:nth-child(2)').attr('id', newSemItem.uID); 
+    addToMultipleLists(listDate, newSemItem);
   }
-  else if (listDate.getTime() === nextListDate.getTime()){
+  else if (listDate.getTime() === nextListDate.getTime() || listDate.getTime() < followingListDate.getTime()){
     localStorData = getLocalStorage('nextList');
         // console.log('reorder date is >= to next List Date and < following listDate');
     localStorData.push(newSemItem);
     localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(trRight+name+trLeft);
+    $('.nextList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+    $('.nextList + table tr:last td:nth-child(2)').attr('id', newSemItem.uID); 
+    addToMultipleLists(listDate, newSemItem);
   }
-  else if (listDate.getTime() === followingListDate.getTime()) {
+  else if (listDate.getTime() === followingListDate.getTime() || listDate.getTime() < holdingListDate.getTime()) {
             // console.log('reorder date is > following listDate');
     localStorData = getLocalStorage('folList');
     localStorData.push(newSemItem);
     localStorage.setItem('folList', JSON.stringify(localStorData));
-    $('.folList + table > tbody').append(trRight+name+trLeft);
+    $('.folList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+    $('.folList + table tr:last td:nth-child(2)').attr('id', newSemItem.uID); 
+    addToMultipleLists(listDate, newSemItem);
   }
+  else if(listDate.getTime() >= holdingListDate.getTime()) {
+    localStorData = getLocalStorage('holdList');
+    localStorData.push(newSemItem);
+    localStorage.setItem('holdList', JSON.stringify(localStorData));
+    $('.holdList + table > tbody').append(trRight+newSemItem.semanticName+trLeft);
+    $('.holdList + table tr:last td:nth-child(2)').attr('id', newSemItem.uID);
+  }
+}
+
+function addToMultipleLists (listDate, newSemItem) {
+  // console.log(listDate);
+  // console.log(newSemItem.reorderFreq);
+  newSemItem.uID = Math.floor(Math.random()*10000000);
+  tempDate = new Date(addDays(listDate,newSemItem.reorderFreq));
+  // console.log(tempDate);
+  chooseList(tempDate, newSemItem);
 }
 
 function getLocalStorage (listKey) {
@@ -224,13 +258,15 @@ function addDataFromLocalStorageToDom (list) {
   var allListItmes = JSON.parse(localStorage.getItem(list));
   // console.log(allListItmes);
   if(list === 'curList'){
-    allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append(trCheck+obj.semanticName+trLeft);  
+    allListItmes.forEach(function(obj,i){
+      $('.'+list+'+ table > tbody').append(trCheck+obj.semanticName+trLeft);
+      $('.'+list+'+ table tr:last td:nth-child(2)').attr('id', obj.uID);  
     });
   }
   else {
-    allListItmes.forEach(function(obj){
-      $('.'+list+'+ table > tbody').append(trRight+obj.semanticName+trLeft);  
+    allListItmes.forEach(function(obj,i){
+      $('.'+list+'+ table > tbody').append(trRight+obj.semanticName+trLeft);
+      $('.'+list+'+ table tr:last td:nth-child(2)').attr('id', obj.uID);   
     });
   }
 }
@@ -245,19 +281,15 @@ function removeFromList (el, list, direction) {
     // console.log($(el).parent().parent());
   var domEl;
   if(direction === 'right'){
-    domEl = $(el).closest('td').prev('td').text();
-  } else {domEl = $(el).closest('td').next('td').text();}
+    domEl = parseInt($(el).closest('td').prev('td').attr('id'));
+  } else {domEl = parseInt($(el).closest('td').next('td').attr('id'));}
 
     $(el).parent().parent().remove();
     var removeFromLocalStorage = getLocalStorage(list);
-    // var domEl = $(el).closest('td').next('td').text();
-    // console.log(domEl);
-    // console.log(removeFromLocalStorage);
+
     var filteredArr = removeFromLocalStorage.filter(function(elem){
-      // console.log(el.semanticName);
-      // console.log(domEl);
-      // console.log(el.semanticName == domEl);
-      return elem.semanticName !== domEl;
+
+      return elem.uID !== domEl;
     });
     // console.log(filteredArr);
     localStorage.setItem(list, JSON.stringify(filteredArr));
@@ -267,14 +299,14 @@ function moveToList (el, list, direction) {
   // body...
   var domEl;
   if(direction === 'left'){
-    domEl = $(el).closest('td').next('td').text();
-  } else {domEl = $(el).closest('td').prev('td').text();}
+    domEl = parseInt($(el).closest('td').next('td').attr('id'));
+  } else {domEl = parseInt($(el).closest('td').prev('td').attr('id'));}
 
   $(el).parent().parent().remove();
   var removeFromLocalStorage = getLocalStorage(list);
   
   var removedArr = removeFromLocalStorage.filter(function(elem){
-    return elem.semanticName === domEl;
+    return elem.uID === domEl;
   });
   return removedArr[0];
     // console.log(filteredArr);
@@ -288,7 +320,10 @@ function hasClass (el) {
   else if($(el).parent().parent().parent().parent().prev().hasClass('nextList')){
     return 'nextList';
   }
-  return 'folList';
+  else if($(el).parent().parent().parent().parent().prev().hasClass('folList')){
+    return 'folList';
+  }
+  return 'holdList';
 }
 
 // var semanticName = '';
@@ -326,6 +361,7 @@ function addToList (tableIndex, el, direction) {
       localStorData.push(objToMove);
       localStorage.setItem('nextList', JSON.stringify(localStorData));
       $('.nextList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      $('.nextList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
     }
     else if(tableIndex === 1) {
       localStorData = getLocalStorage('folList');
@@ -336,6 +372,18 @@ function addToList (tableIndex, el, direction) {
       localStorData.push(objToMove);
       localStorage.setItem('folList', JSON.stringify(localStorData));
       $('.folList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      $('.folList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
+    }
+    else {
+      localStorData = getLocalStorage('holdList');
+        // test.push(newSemItem);
+        // console.log(test);
+        // console.log(classIs);
+      objToMove =   moveToList($(el),classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('holdList', JSON.stringify(localStorData));
+      $('.holdList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      $('.holdList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
     }
   }
   else {
@@ -344,50 +392,144 @@ function addToList (tableIndex, el, direction) {
       // test.push(newSemItem);
       // console.log(test);
       // console.log(classIs);
-    objToMove =   moveToList($(el),classIs, direction);
-    localStorData.push(objToMove);
-    localStorage.setItem('curList', JSON.stringify(localStorData));
-    $('.curList + table > tbody').append(trCheck+objToMove.semanticName+trLeft);
+      objToMove =   moveToList($(el),classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('curList', JSON.stringify(localStorData));
+      $('.curList + table > tbody').append(trCheck+objToMove.semanticName+trLeft);
+      $('.curList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
   }
     else if(tableIndex === 2) {
-    localStorData = getLocalStorage('nextList');
-      // test.push(newSemItem);
-      // console.log(test);
-      // console.log(classIs);
-    objToMove =   moveToList($(el),classIs, direction);
-    localStorData.push(objToMove);
-    localStorage.setItem('nextList', JSON.stringify(localStorData));
-    $('.nextList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      localStorData = getLocalStorage('nextList');
+        // test.push(newSemItem);
+        // console.log(test);
+        // console.log(classIs);
+      objToMove =   moveToList($(el),classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('nextList', JSON.stringify(localStorData));
+      $('.nextList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      $('.nextList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
+    }
+    else {
+      localStorData = getLocalStorage('folList');
+      objToMove = moveToList($(el), classIs, direction);
+      localStorData.push(objToMove);
+      localStorage.setItem('folList', JSON.stringify(localStorData));
+      $('.folList + table > tbody').append(trRight+objToMove.semanticName+trLeft);
+      $('.folList + table tr:last td:nth-child(2)').attr('id', objToMove.uID); 
     }
   }
 }
 
 
-  function moveLeft (el) {
-    var direction = 'left';
-    var curEl = $(el).parent().parent().parent().parent();
-    var tableIndex = $('table').index(curEl);
-    classIs = hasClass(el);
-    addToList(tableIndex, el, direction);
-    removeFromList(el, classIs, direction);
+function moveLeft (el) {
+  var direction = 'left';
+  var curEl = $(el).parent().parent().parent().parent();
+  var tableIndex = $('table').index(curEl);
+  classIs = hasClass(el);
+  addToList(tableIndex, el, direction);
+  removeFromList(el, classIs, direction);
+}
+
+function seedLocalStorage(list) {
+  var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
+  var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
+  var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+
+  if(!JSON.parse(localStorage.getItem(list))){
+  // console.log(JSON.parse(localStorage.getItem('items')));
+  
+    if (list === 'curList'){
+      localStorage.setItem(list, JSON.stringify(data1));
+    }
+    else if (list === 'nextList'){
+      localStorage.setItem(list, JSON.stringify(data2));
+    }
+    else {
+      localStorage.setItem(list, JSON.stringify(data3));
+    }
+  }
+}
+
+function changeListDates (list) {
+  // debugger
+  var now = new Date();
+  // now = new Date(addDays(now,daysBetweenShops));
+  var listDate = new Date($('.'+list).text());
+  listDate = new Date(addDays(listDate,1)-1000);
+
+  for (var iDate = listDate, j=1; iDate < now ; iDate.setDate(iDate.getDate() + daysBetweenShops), j++) {
+    // if(j===1){
+
+    var localStorDataCurList = getLocalStorage('curList');
+    var localStorDataNextList = getLocalStorage('nextList');
+    var localStorDataFolList = getLocalStorage('folList');
+    //  allListItmes.forEach(function(obj){
+    //   $('.'+list+'+ table > tbody').append(trCheck+obj.semanticName+trLeft);  
+    // });
+    localStorDataNextList.forEach(function(arr){
+      localStorDataCurList.push(arr);
+    });
+    // localStorDataCurList.push(localStorDataNextList);
+    localStorDataNextList = [];
+    localStorDataFolList.forEach(function(arr){
+      localStorDataNextList.push(arr);
+    });
+    // localStorDataNextList.push(localStorDataFolList);
+    localStorDataFolList = [];
+    localStorage.setItem('curList', JSON.stringify(localStorDataCurList));
+    localStorage.setItem('nextList', JSON.stringify(localStorDataNextList));
+    localStorage.setItem('folList', JSON.stringify(localStorDataFolList));
+
+    $('.nextList + table').find('td:first-child() button').removeClass('move-left btn-primary glyphicon-arrow-left');
+    $('.nextList + table').find('td:first-child() button').addClass('glyphicon-ok btn-success');
+    $('.curList + table > tbody').append($('.nextList + table').find('tr:not(:first-child())'));
+    $('.nextList + table > tbody').append($('.folList + table').find('tr:not(:first-child())'));
+    // }
+    // else if(j===2){
+
+    // }
+    currentListDate = new Date(currentListDate.setDate(currentListDate.getDate() + daysBetweenShops));
+  
   }
 
-  function seedLocalStorage(list) {
-    var data1 = [{"semanticName":"Milk","reorderFreq":1,"upc":49000000443},{"semanticName":"Bread","reorderFreq":1,"upc":49000000443},{"semanticName":"Cheese","reorderFreq":1,"upc":49000000443},{"semanticName":"Eggs","reorderFreq":1,"upc":49000000443}];
-    var data3 = [{"semanticName":"Conditioner","reorderFreq":7,"upc":49000000443},{"semanticName":"Shampoo","reorderFreq":7,"upc":49000000443},{"semanticName":"Toilet Paper","reorderFreq":14,"upc":49000000443},{"semanticName":"Toothpaste","reorderFreq":14,"upc":49000000443}];
-    var data2 = [{"semanticName":"Peanut Butter","reorderFreq":3,"upc":49000000443},{"semanticName":"Graham Cracker","reorderFreq":3,"upc":49000000443},{"semanticName":"Spaghetti","reorderFreq":3,"upc":49000000443},{"semanticName":"Napkins","reorderFreq":2,"upc":49000000443}];
+  nextListDate = new Date (addDays(currentListDate,daysBetweenShops));
+  followingListDate = new Date(addDays(nextListDate,daysBetweenShops));
+  holdingListDate = new Date(addDays(followingListDate,daysBetweenShops));
 
-    if(!JSON.parse(localStorage.getItem(list))){
-    // console.log(JSON.parse(localStorage.getItem('items')));
-    
-      if (list === 'curList'){
-        localStorage.setItem(list, JSON.stringify(data1));
-      }
-      else if (list === 'nextList'){
-        localStorage.setItem(list, JSON.stringify(data2));
-      }
-      else {
-        localStorage.setItem(list, JSON.stringify(data3));
-      }
-  }
+  $('.curList').text(currentListDate.toDateString());
+  $('.nextList').text(nextListDate.toDateString());
+  $('.folList').text(followingListDate.toDateString());
+  $('.holdList').text(holdingListDate.toDateString());
+
+   $('input[type="radio"]').eq(0).next().html('&nbsp Current List: '+ currentListDate.toDateString());
+  $('input[type="radio"]').eq(1).next().html('&nbsp Next List: '+ nextListDate.toDateString());
+  $('input[type="radio"]').eq(2).next().html('&nbsp Following List: '+ followingListDate.toDateString());
+
+  $('input[type="radio"]').eq(0).attr('value', currentListDate);
+  $('input[type="radio"]').eq(1).attr('value', nextListDate);
+  $('input[type="radio"]').eq(2).attr('value', followingListDate);
+
+  // if(listDate < now){
+
+
+    // if (list === 'curList'){
+    //   $('.'+list+' + table').find('tr:not(:first-child())').remove();
+    // }
+
+    // $('.'+list+' + table').find('tr:not(:first-child())').remove();
+    // localStorData = getLocalStorage(list);
+  
+    // if (list === 'curList'){
+
+      
+    // }
+    // else if (list === 'nextList'){
+    //   localStorage.setItem(list, JSON.stringify(data2));
+    // }
+    // else {
+    //   localStorage.setItem(list, JSON.stringify(data3));
+    // }
+  // }
+
+
 }

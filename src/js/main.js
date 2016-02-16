@@ -258,13 +258,13 @@ function addDataFromLocalStorageToDom (list) {
   var allListItmes = JSON.parse(localStorage.getItem(list));
   // console.log(allListItmes);
   if(list === 'curList'){
-    allListItmes.forEach(function(obj,i){
+    allListItmes.forEach(function(obj){
       $('.'+list+'+ table > tbody').append(trCheck+obj.semanticName+trLeft);
       $('.'+list+'+ table tr:last td:nth-child(2)').attr('id', obj.uID);  
     });
   }
   else {
-    allListItmes.forEach(function(obj,i){
+    allListItmes.forEach(function(obj){
       $('.'+list+'+ table > tbody').append(trRight+obj.semanticName+trLeft);
       $('.'+list+'+ table tr:last td:nth-child(2)').attr('id', obj.uID);   
     });
